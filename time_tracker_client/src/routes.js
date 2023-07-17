@@ -6,7 +6,14 @@ import Package from "./pages/Package"
 
 export const authRoutes =[
 
-
+    {
+        path: MAIN_ROUTER,
+        element: Main
+    },
+    {
+        path: PACKAGE_ROUTER+'/'+':id',
+        element: Package
+    }
 
 
 ]
@@ -19,14 +26,7 @@ export const publicRoutes=[
         path: REGISTRATION_ROUTER,
         element: Auth
     },
-    {
-        path: MAIN_ROUTER,
-        element: Main
-    },
-    {
-        path: PACKAGE_ROUTER+'/'+':id',
-        element: Package
-    }
+    
 
     
 

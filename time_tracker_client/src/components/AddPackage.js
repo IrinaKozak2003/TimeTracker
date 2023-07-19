@@ -35,6 +35,7 @@ const onClick = async() => {
         usedPackageBudget: 0
     };
     await createPackage(data);
+    window.location.reload();
     setShow(false)
   }
   const UpdateClick = async() => {
@@ -48,6 +49,7 @@ const onClick = async() => {
       users: selectedPeople.map((person) => person.value.id),
     }
     await updatePackage(data);
+    window.location.reload();
     setShow(false);
   }
   useEffect(() => {
@@ -115,7 +117,8 @@ const onClick = async() => {
           <Form.Label>Package name</Form.Label>
           <Form.Control type="text" placeholder="Enter package name" value={name}  onChange={(e) => setName(e.target.value)} />
           <Form.Label>Package budget</Form.Label>
-          <Form.Control type="number" placeholder="Enter package budget" value={budget} onChange={(e) => setBudget(e.target.value)} />
+          <Form.Control type="time" placeholder="Enter package budget" value={budget} onChange={(e) => setBudget(e.target.value)} />
+          {!isUpdate? <div>
           <Form.Label>Select users</Form.Label>
           <div>
             {loading ? (
@@ -131,6 +134,7 @@ const onClick = async() => {
               ))}
             </div>
           </div>
+          </div>:null}
           <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
             <Form.Label>Package Description</Form.Label>
             <Form.Control as="textarea" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />

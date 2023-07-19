@@ -1,16 +1,17 @@
 import { $authHost, $host } from "./index";
 import jwt_decode from "jwt-decode"
 
-export const registration = async (email, password, confirmPassword, username) => {
+export const registration = async (email, password, confirmPassword, username, role) => {
     try {
       const response = await $host.post("/api/v1/authenticate/register", {
         username,
         password,
         confirmPassword,
-        email
+        email,
+        Role:role? "Admin":"User"
+
       });
-      localStorage.setItem("token", response.data.token);
-      return jwt_decode(response.data.token);
+  
     } catch (error) {
       console.error(error);
       // Handle any errors appropriately
@@ -42,22 +43,24 @@ export const fetchUsersById = async (id) => {
   return response.data
 }
 export const deleteUser = async (id) => {
-    const response = await $authHost.delete("/users/" + id);
+    const response = await $authHost.delete("/api/v1/authenticate/delete/" + id,{
+      headers: "Authorization : Bearer " + localStorage.getItem('token') 
+    });
     return response
 }
-export const updateUser = async (id,  username) => {
-    const response = await $authHost.put("/users/" + id, {  USERNAME: username });
+export const updateUser = async ( data) => {
+    const response = await $authHost.put("/api/v1/authenticate/update", {
+        UserId: data.userId,
+        UserName: data.userName,
+    });
     return response
 }
+
 export const getUserById = async (id) => {
     const response = await $authHost.get("/users/" + id);
     return response
 }
-export const getAllByPagesU = async (page, limit) => {
-    const response = await $host.get("/users/getAllByPages", {
-        params: {
-            page, limit
-        }
-    });
-    return response.data;
+export const fetchUsersAll = async () => {
+  const response = await $authHost.get("/api/v1/authenticate/users/all");
+  return response.data.users
 }

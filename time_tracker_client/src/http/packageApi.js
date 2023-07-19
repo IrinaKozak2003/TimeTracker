@@ -1,5 +1,4 @@
 import { $authHost, $host } from "./index";
-import jwt_decode from "jwt-decode"
 import FileSaver from 'file-saver';
 
 
@@ -38,7 +37,10 @@ export const createPackage = async (data) => {
         return response.data
     }
     export const deletePackage = async (id) => {
-        const response = await $authHost.delete("/api/package/"+id);
+        const response = await $authHost.delete("/api/package/"+id,{
+            headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+
+        });
         return response
     }
     export const updatePackage = async (data) => {
@@ -66,3 +68,84 @@ export const createPackage = async (data) => {
             console.error('Error exporting packages:', error);
         });
     }
+    export const getAllPackages = async () => {
+        const response = await $authHost.get("/api/all/package",{
+            headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+        });
+        return response.data.result
+    }
+    export const updateUsersInPackage = async (id, users) => {
+        console.log(users)
+        const response = await $authHost.put("/api/package/"+id+"/updateUsers",{
+            UserIds: users
+        },{
+            headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+        });
+        return response.data.result
+    }
+    export const updatePackageStatus = async (id, status) => {
+        const response = await $authHost.put("/api/package/"+id+"/updateStatus",{
+            Status: status
+        },{
+            headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+        });
+        return response.data.result
+    }
+    export const AddPackageBudget = async (id, budget) => {
+     
+        const response = await $authHost.post("/api/package/budget/create/"+id,{
+            Id: "0",
+            BudgetName: budget.name,
+            Present: budget.present,
+            UsedBudget:"00:00:00",
+        },{
+            headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+        });
+        return response.data.result
+    }
+    export const UpdatePackageBudget = async (id, budget) => {
+      let  response ={}
+        if(budget.isUser==true){
+        
+             response = await $authHost.put("/api/package/budget/"+id,{
+                Id: budget.budgetId,
+                BudgetName: budget.name,
+                Present: budget.present,
+                UsedBudget: budget.usedBuget,
+                IsUser: budget.isUser,
+                UserId: budget.userId,
+                Comment: budget.comment,
+            },{
+                headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+            });
+        }else{
+         response = await $authHost.put("/api/package/budget/"+id,{
+            Id: budget.budgetId,
+            BudgetName: budget.name,
+            Present: budget.present,
+            UsedBudget: budget.usedBuget,
+        },{
+            headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+        });}
+        return response.data.result
+    }
+    export const DeletePackageBudget = async (id, budget) => {
+        console.log(budget)
+        const response = await $authHost.post("/api/package/budget/"+id,{
+            Id: budget.id,
+            BudgetName: budget.budgetName,
+            Present: budget.present,
+            UsedBudget: budget.usedBudget,
+        },{
+            headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+        });
+        return response.data.result
+    }
+    export const GetPackageBudgets = async (id) => {
+        const response = await $authHost.get("/api/all/budgets/"+id,{
+            headers: { "Authorization": `Bearer ${localStorage.getItem('token')}` }
+        });
+        return response.data
+        }
+    
+

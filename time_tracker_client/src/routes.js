@@ -22,11 +22,7 @@ export const publicRoutes=[
         path: LOGIN_ROUTER,
         element: Auth
     },
-    {
-        path: REGISTRATION_ROUTER,
-        element: Auth
-    },
-    
+  
 
     
 

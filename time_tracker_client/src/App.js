@@ -5,12 +5,15 @@ import { observer } from "mobx-react-lite";
 import { check } from "./http/userApi";
 import { useContext } from "react";
 import { Context } from "./index";
-import { useEffect } from "react";
+
 const App = observer(() => {
   const { user } = useContext(Context);
   check().then(data => {
     user.setUser(data);
     user.setIsAuth(true);
+    if (data['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] === 'Admin') {
+      user.setIsAdmin(true);
+    }
   })
  
   return (

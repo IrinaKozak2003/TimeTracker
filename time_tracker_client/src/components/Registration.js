@@ -2,16 +2,25 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import { registration } from '../http/userApi';
+import validator from 'validator';
 
-function Example() {
+
+
+function Registration() {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  
+
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
@@ -27,6 +36,29 @@ function Example() {
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
   };
+  
+
+
+  const click = async () => {
+    try {
+      const isEmailValid = validator.isEmail(email);
+      if (!isEmailValid) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+
+     
+        if (password !== confirmPassword) {
+          alert('Password and confirm password do not match.');
+          return;
+        }
+        const response = await registration(email, password, confirmPassword, username, isChecked);
+        setShow(false)
+        window.location.reload();
+    } catch (e) {
+        alert(e.response.data.message);
+        }
+    }
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
@@ -45,6 +77,8 @@ function Example() {
                 type="email"
                 placeholder="name@example.com"
                 autoFocus
+                onChange={handleEmailChange}
+                value={email}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -53,6 +87,8 @@ function Example() {
                 type="text"
                 placeholder="example"
                 autoFocus
+                onChange={handleUsernameChange}
+                value={username}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -61,6 +97,8 @@ function Example() {
                 type="password"
                 placeholder="password"
                 autoFocus
+                onChange={handlePasswordChange}
+                value={password}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
@@ -69,15 +107,25 @@ function Example() {
                 type="password"
                 placeholder="password"
                 autoFocus
+                onChange={handleConfirmPasswordChange}
+                value={confirmPassword}
               />
             </Form.Group>
+            <Form>
+      <Form.Check
+        type="checkbox"
+        label="Admin"
+        checked={isChecked}
+        onChange={handleCheckboxChange}
+      />
+    </Form>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={click}>
             Save Changes
           </Button>
         </Modal.Footer>
@@ -86,4 +134,4 @@ function Example() {
   );
 }
 
-export default Example;
+export default Registration;
